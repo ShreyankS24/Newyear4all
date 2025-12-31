@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <style>
+        body {
+            background-color: #f0f0f0; /* Light grey background outside the phone area */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif; /* Matches the video font */
+        }
+
+        #mobile-container {
+            background-color: white;
+            width: 375px; /* Mobile width */
+            height: 667px; /* Mobile height */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            z-index: 10;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: opacity 0.5s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+            z-index: 5;
+        }
+
+        img {
+            max-width: 250px;
+            max-height: 250px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .text-content {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            padding: 8px 30px;
+            background: pink;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #f8f8f8;
+            transform: scale(1.10);
+        }
+
+        /* Special styling for the 'Gun' screen text */
+        .angry-text {
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .container {
+  position: relative;
+  display: inline-block;
+}
+
+.gift-img {
+  position: absolute;
+  top: 46.5%;          
+  left: 49.3%;   
+  width:40%;
+  z-index: 2;
+    
+}
+
+.bottom-layer {
+  position: relative; 
+  z-index: 1; 
+}
+  /* Gift box interaction */
+        #gift-img {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        #gift-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Final Message */
+        .final-text {
+            font-weight: bold;
+            font-size: 20px;
+            padding: 0 20px;
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="Assets/music.mp3" type="audio/mpeg">
+    </audio>
+
+        <div id="screen1" class="screen active">
+            <img src="Assets/cat-ask.png" alt="Cute Cat">
+            <div class="text-content">Hey I made something for you<br>Will you see it?</div>
+            <div class="buttons">
+                <button onclick="handleYes()">YES</button>
+                <button onclick="handleNo()">NO</button>
+            </div>
+        </div>
+
+        <div id="screen2" class="screen">
+            <img src="Assets/cat-gun.png" alt="Gun Cat">
+            <div class="text-content angry-text">HOW DARE YOUUU!!!</div>
+            <button onclick="reset()">BACK</button>
+        </div>
+
+        <div id="screen3" class="screen">
+            <img src="Assets/cat-happy.png" alt="Happy Cat">
+            <div class="text-content">Hehe!<br>Click below for the SURPRISE!!</div>
+            <button onclick="toGift()">NEXT</button>
+        </div>
+
+        <div id="screen4" class="screen">
+            <div class="text-content">Happy New Year my Kuchupuchuuu!!<br>Click on the Gift Box</div>
+            <div class="container">
+            <img class="bottom-layer" src="Assets/cat-gift.png" alt="base">
+              	
+            <img class="gift-img" src="Assets/gift-box.png" alt="Gift" onclick="openGift()"> </div>
+        </div>
+        <div id="screen5" class="screen">
+            <img src="Assets/cat-cool.png" alt="Funny Cat">
+            <div class="text-content final-text">I will continue irritating you this year as well ❤️</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Music logic
+        const audio = document.getElementById('bg-music');
+        let musicStarted = false;
+
+        function playMusic() {
+            if (!musicStarted) {
+                audio.volume = 0.5;
+                audio.play().catch(error => console.log("Click required to play audio"));
+                musicStarted = true;
+            }
+        }
+
+        // Navigation
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Show target screen
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function handleYes() {
+            playMusic();
+            showScreen('screen3');
+        }
+
+        function handleNo() {
+            playMusic();
+            showScreen('screen2');
+        }
+
+        function reset() {
+            showScreen('screen1');
+        }
+
+        function toGift() {
+            showScreen('screen4');
+        }
+
+        function openGift() {
+            showScreen('screen5');
+            // Trigger confetti effect
+            fireConfetti();
+        }
+
+        // Simple Confetti effect function
+        function fireConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
+            const container = document.getElementById('mobile-container');
+            
+            for(let i=0; i<50; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'absolute';
+                conf.style.width = '10px';
+                conf.style.height = '10px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = '-10px';
+                conf.style.zIndex = '100';
+                conf.style.transition = 'top 2s ease-in, transform 2s ease-in';
+                
+                container.appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.top = '110%';
+                    conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>
